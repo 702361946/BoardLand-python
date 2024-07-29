@@ -518,26 +518,31 @@ def def_user_dice_plate(up):
             t = def_user_dice_plate_up()
             if not t == 'no':
                 dice_list[int(temp) - 1].use = 1
+                plate_list[player.plate].xp += 1
 
         elif temp == '2' and dice1.use == 0:
             t = def_user_dice_plate_up()
             if not t == 'no':
                 dice_list[int(temp) - 1].use = 1
+                plate_list[player.plate].xp += 1
 
         elif temp == '3' and dice2.use == 0:
             t = def_user_dice_plate_up()
             if not t == 'no':
                 dice_list[int(temp) - 1].use = 1
+                plate_list[player.plate].xp += 1
 
         elif temp == '4' and dice3.use == 0:
             t = def_user_dice_plate_up()
             if not t == 'no':
                 dice_list[int(temp) - 1].use = 1
+                plate_list[player.plate].xp += 1
 
         elif temp == '5' and dice4.use == 0:
             t = def_user_dice_plate_up()
             if not t == 'no':
                 dice_list[int(temp) - 1].use = 1
+                plate_list[player.plate].xp += 1
 
         else:
             tt = 0
@@ -548,15 +553,79 @@ def def_user_dice_plate(up):
 
             if plate_list[player.plate].kind == 0:
                 player.attack += t
+                if plate_list[player.plate].grade > 0:
+                    player.attack += plate_list[player.plate].grade * 2
                 print(f'预计造成{player.attack}点伤害')
 
             elif plate_list[player.plate].kind == 1:
                 player.defense += t
+                if plate_list[player.plate].grade > 0:
+                    player.defense += plate_list[player.plate].grade
                 print(f'预计拥有{player.defense}点防御')
 
             elif plate_list[player.plate].kind == 2:
+                if plate_list[player.plate].grade > 0:
+                    if plate_list[player.plate].grade == 1 and t > 4:
+                        t = 4
+                    elif plate_list[player.plate].grade == 2 and t > 5:
+                        t = 5
                 player.treatment += t
                 print(f'预计生命增加{player.treatment}点')
 
     if True:
+        def_plate_up()
         return t
+
+
+# 板块等级与经验查看
+def def_plate_xpg():
+    logging.info('user def plate_xgg')
+    print(f'目前在板块{player.plate + 1}上\n板块经验为{plate_list[player.plate].xp}\n板块等级为{plate_list[player.plate].grade}')
+    input('按下Enter(回车)继续')
+
+
+# 板块升级
+def def_plate_up():
+    logging.debug('sys def plate_up')
+
+    def def_plate_up_t(t0_int):
+        print('板块升级')
+        tt = 0
+        up_0 = random.randint(0, 2)
+        up_1 = random.randint(0, 2)
+        while up_1 == up_0:
+            up_1 = random.randint(0, 2)
+        if t0_int == 0:
+            while tt < 1:
+                tt = 1
+                temp = input(f'0 {plate_kind_list[up_0]}\n1 {plate_kind_list[up_1]}')
+                if temp == '0':
+                    plate_list[player.plate].kind = up_0
+                    print(f'板块类型已改为{plate_kind_list[up_0]}')
+                    plate_list[player.plate].grade += 1
+                elif temp == '1':
+                    plate_list[player.plate].kind = up_1
+                    print(f'板块类型已改为{plate_kind_list[up_1]}')
+                    plate_list[player.plate].grade += 1
+                else:
+                    tt = 0
+                    print('请输入正确的值')
+        elif t0_int == 1:
+            while tt < 1:
+                tt = 1
+                temp = input(f'0 升级\n1 更改类型为{plate_kind_list[up_0]}')
+                if temp == '0':
+                    plate_list[player.plate].grade += 1
+                elif temp == '1':
+                    plate_list[player.plate].kind = up_0
+                    print(f'板块类型已改为{plate_kind_list[up_0]}')
+                else:
+                    tt = 0
+                    print('请输入正确的值')
+
+    if plate_list[player.plate].xp >= 3 and plate_list[player.plate].grade == 0:
+        def_plate_up_t(0)
+    elif plate_list[player.plate].xp >= 8 and plate_list[player.plate].grade == 1:
+        def_plate_up_t(1)
+    elif plate_list[player.plate].xp >= 15 and plate_list[player.plate].grade == 2:
+        def_plate_up_t(1)

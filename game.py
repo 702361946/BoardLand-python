@@ -48,7 +48,7 @@ while t < 1:
     # 回合开始提醒
     print(f'回合开始,当前回合:{time}')
     # 药水获取
-    if (time - 1) % 3 == 0:
+    if (time - 1) % 3 == 0 and not time == 1:
         def_potion_get()
     # 可用骰子提醒
     def_dice_reminder_use0()
@@ -59,36 +59,52 @@ while t < 1:
     # 用户行为阶段
     t1 = 0
     while t1 < 1:
-        temp = input('0 查看可用骰子\n1 查看所在板块\n2 选择骰子并行动\n3 查看药水\n4 使用药水\n7 查看怪物意图\n8 下一回合\n9 退出游戏')
+        t2 = 0
+        temp = input('0 骰子\n1 查看所在板块\n2 查看所处板块等级与经验\n3 药水\n7 查看怪物意图\n8 下一回合\n9 退出游戏')
         if temp == '0':
-            def_dice_reminder_use0()
+            while t2 < 1:
+                t2 = 1
+                temp = input('0 查看可用骰子\n1 选择骰子并行动\n9 取消')
+                if temp == '0':
+                    def_dice_reminder_use0()
+                elif temp == '1':
+                    t3 = 0
+                    while t3 < 1:
+                        t2 = 1
+                        temp = input(f'0 移动\n1 {plate_kind_list[plate_list[player.plate].kind]}\n9 取消')
+
+                        if temp == '0':
+                            def_user_dice_use_0()
+                            up = def_user_dice_move()
+
+                        elif temp == '1':
+                            def_user_dice_use_0()
+                            up = def_user_dice_plate(up)
+
+                        else:
+                            t2 = 0
+                            print('请输入有效的值')
+                else:
+                    t2 = 0
+                    print('输入正确的值')
 
         elif temp == '1':
             def_plate_reminder()
 
         elif temp == '2':
-            t2 = 0
-            while t2 < 1:
-                t2 = 1
-                temp = input(f'0 移动\n1 {plate_kind_list[plate_list[player.plate].kind]}\n9 取消')
-
-                if temp == '0':
-                    def_user_dice_use_0()
-                    up = def_user_dice_move()
-
-                elif temp == '1':
-                    def_user_dice_use_0()
-                    up = def_user_dice_plate(up)
-
-                else:
-                    t2 = 0
-                    print('请输入有效的值')
+            def_plate_xpg()
 
         elif temp == '3':
-            def_potion_check()
-
-        elif temp == '4':
-            def_potion_use()
+            while t2 < 1:
+                t2 = 1
+                temp = input('0 查看药水\n1 使用药水')
+                if temp == '0':
+                    def_potion_check()
+                elif temp == '1':
+                    def_potion_use()
+                else:
+                    t2 = 0
+                    print('请输入正确的值')
 
         elif temp == '7':
             def_monster_adt()
