@@ -1,3 +1,5 @@
+#  Copyright (c) 2024.
+
 # @2024
 # 702361946@qq.com
 # 2024.06.28立项
@@ -11,7 +13,7 @@ from datetime import datetime
 
 # 日志初定义
 if True:
-    logging.basicConfig(filename='configure.log', filemode='w', level=logging.DEBUG)
+    logging.basicConfig(filename='configure.log', filemode='w', level=logging.DEBUG, encoding='UTF-8')
     logging.info(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
 # user and time
@@ -26,14 +28,17 @@ except FileNotFoundError:
     print("错误：user文件未找到。")
     user = "user"
     time = '?'
+    logging.error('open user.txt FileNotFoundError')
 except ValueError:
     print("错误：user文件格式不正确。")
     user = "user"
     time = '?'
+    logging.error('open user.txt ValueError')
 except Exception as e:
     print(f"读取user文件时发生错误：{e}")
     user = "user"
     time = '?'
+    logging.error(f'open user.txt error:{e}')
 
 # 结果(输赢啥的)
 try:
@@ -49,9 +54,11 @@ try:
 except FileNotFoundError:
     print("错误：result文件未找到。")
     result = '?'
+    logging.error('open result.txt FileNotFoundError')
 except Exception as e:
     print(f"读取result文件时发生错误：{e}")
     result = '?'
+    logging.error(f'open result.txt {e}')
 
 
 # 玩家
@@ -67,29 +74,36 @@ class Player(object):
 # 定义玩家和怪物
 if True:
     player = Player(40, 0, 0, 0, 0)
+    logging.info('sys player ok')
     monster = Player(random.randint(20, 50), 0, 0, 0, None)
-    logging.info('player and monster ok')
+    logging.info('sys monster ok')
 
 
 # 重置玩家与怪物意图
 def def_player_time():
-    logging.info('player and monster adt = 0')
-    player.attack = 0
-    player.defense = 0
-    player.treatment = 0
+    logging.info('sys def player_time')
+    # player
+    if True:
+        player.attack = 0
+        player.defense = 0
+        player.treatment = 0
+        logging.info(f'sys player attack={player.attack} defense={player.defense} treatment={player.treatment}')
+    # monster
+    if True:
+        if random.randint(0, 2) == 0:
+            monster.attack = random.randint(5, 10)
+            monster.defense = 0
+            monster.treatment = 0
+        elif random.randint(0, 1) == 0:
+            monster.attack = 0
+            monster.defense = random.randint(3, 10)
+            monster.treatment = 0
+        else:
+            monster.attack = 0
+            monster.defense = 0
+            monster.treatment = random.randint(2, 5)
 
-    if random.randint(0, 2) == 0:
-        monster.attack = random.randint(5, 10)
-        monster.defense = 0
-        monster.treatment = 0
-    elif random.randint(0, 1) == 0:
-        monster.attack = 0
-        monster.defense = random.randint(3, 10)
-        monster.treatment = 0
-    else:
-        monster.attack = 0
-        monster.defense = 0
-        monster.treatment = random.randint(2, 5)
+        logging.info(f'sys monster attack={monster.attack} defense={monster.defense} treatment={monster.treatment}')
 
 
 # 板块
@@ -117,6 +131,10 @@ if True:
     plate_list = [plate0, plate1, plate2, plate3, plate4, plate5, plate6, plate7, plate8, plate9]
     plate_kind_list = ['攻击', '防御', '治疗']
     logging.info('plate ok')
+    tt = 0
+    while tt < len(plate_list):
+        logging.debug(f'sys plate {tt} king={plate_list[tt].kind} xp={plate_list[tt].xp} grade={plate_list[tt].grade}')
+        tt += 1
 
 
 # 骰子
@@ -139,6 +157,12 @@ if True:
     dice4 = Dice(1)
     dice_list = [dice0, dice1, dice2, dice3, dice4]
     logging.info('dice ok')
+    tt = 0
+    while tt < len(dice_list):
+        logging.debug(f'sys dice {tt} use={dice_list[tt].use} point={dice_list[tt].point} max={dice_list[tt].point_max}'
+                      f' min={dice_list[tt].point_min}')
+        tt += 1
+
 
 # 药水基础列表
 if True:
@@ -165,6 +189,12 @@ if True:
     potion_user_list.append(potion1)
     potion_user_list.append(potion2)
     logging.info('potion ok')
+    t_list = potion_user_list
+    tt = 0
+    while tt < len(t_list):
+        logging.debug(f'sys potion name={t_list[tt].name} type={t_list[tt].type} value={t_list[tt].value}')
+        tt += 1
+    del t_list
 
 
 # 可用药水查看
@@ -200,10 +230,14 @@ def def_potion_get():
             potion_user_list[temp].value = random.randint(1, 5)
             print(f'药水添加至药水槽{temp + 1},类型为{potion_name_list[tt]},可{potion_introduction_list[tt]}')
 
+            logging.debug(f'sys potion_get_ok name={potion_user_list[temp].name} type={potion_user_list[temp].type}'
+                          f' value={potion_user_list[temp].value}')
+
             temp = len(potion_user_list)
 
         else:
             t += 1
+            temp += 1
 
     if t == len(potion_user_list):
         print('无药水空闲槽,无法获取')
@@ -218,15 +252,26 @@ def def_potion_use():
         if potion_user_list[t_int].type == 0:
             player.plate += potion_user_list[t_int].value
             def_plate_reminder()
+
+            logging.info(f'user potion plate+:{potion_user_list[t_int].value}')
+
         elif potion_user_list[t_int].type == 1:
             player.attack += potion_user_list[t_int].value
             print(f'预计目前可造成伤害{player.attack}')
+
+            logging.info(f'user potion attack+:{potion_user_list[t_int].value}')
+
         elif potion_user_list[t_int].type == 2:
             player.defense += potion_user_list[t_int].value
             print(f'目前可防御{player.defense}点伤害')
+
+            logging.info(f'user potion defense+:{potion_user_list[t_int].value}')
+
         elif potion_user_list[t_int].type == 3:
             player.treatment += potion_user_list[t_int].value
             print(f'预计可回复{player.treatment}点血量')
+
+            logging.info(f'user potion treatment+:{potion_user_list[t_int].value}')
 
         potion_user_list[t_int].type = 9
 
@@ -236,7 +281,7 @@ def def_potion_use():
         potion_use_no_g(int(temp) - 1)
     elif temp == '2' and not potion_user_list[int(temp) - 1].type == 9:
         potion_use_no_g(int(temp) - 1)
-    elif temp == '2' and not potion_user_list[int(temp) - 1].type == 9:
+    elif temp == '3' and not potion_user_list[int(temp) - 1].type == 9:
         potion_use_no_g(int(temp) - 1)
     else:
         input('不可用\n按下Enter(回车)继续')
@@ -265,29 +310,31 @@ def def_dice_reset():
 
 # 退出
 def def_exit():
-    logging.debug('sys exit')
     logging.info(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    logging.debug('sys exit')
     sys.exit()
 
 
 # 将配置录入txt
 def def_open_user():
     try:
-        logging.debug('w user.txt')
+        logging.debug('sys w user.txt')
         with open('user.txt', 'w', encoding='UTF-8') as open_user:
             open_user.write(f"user;{user};time;{time}")
     except Exception as e:
         print(f"写入用户文件时发生错误：{e}")
+        logging.error(f'sys w user.txt error:{e}')
 
 
 # 将结果录入txt
 def def_open_result(result):
     try:
-        logging.debug('w result.txt')
+        logging.debug('sys w result.txt')
         with open('result.txt', 'w', encoding='UTF-8') as open_result:
             open_result.write(str(result))
     except Exception as e:
         print(f"写入结果文件时发生错误：{e}")
+        logging.error(f'sys w result.txt error:{e}')
 
 
 # user页
@@ -323,49 +370,49 @@ def def_result(result):
     return result
 
 
-# 上一次读取
-progress_player_hp = 0
-progress_monster_hp = 0
-progress_time = 0
-progress_plate = 0
-
-
-def def_read_progress():
-    try:
-        with open('game_progress.txt', 'r+', encoding='UTF-8') as open_progress:
-            for txt in open_progress.readlines():
-                open_progress_temp = txt.strip().split(';')
-                # 确保分割后的列表有足够的元素来防止索引错误
-                if len(open_progress_temp) >= 10:
-                    global progress_plate
-                    global progress_player_hp
-                    global progress_monster_hp
-                    global progress_time
-                    progress_player_hp = int(open_progress_temp[1])
-                    progress_monster_hp = int(open_progress_temp[3])
-                    progress_time = int(open_progress_temp[5])
-                    progress_plate = int(open_progress_temp[7])
-                    progress_t = int(open_progress_temp[9])
-                else:
-                    raise ValueError("Progress data format is incorrect.")
-    except FileNotFoundError:
-        print("The file 'game_progress.txt' was not found.")
-    except ValueError as ve:
-        print(f"Value error: {ve}")
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+# # 上一次读取
+# progress_player_hp = 0
+# progress_monster_hp = 0
+# progress_time = 0
+# progress_plate = 0
+#
+#
+# def def_read_progress():
+#     try:
+#         with open('game_progress.txt', 'r+', encoding='UTF-8') as open_progress:
+#             for txt in open_progress.readlines():
+#                 open_progress_temp = txt.strip().split(';')
+#                 # 确保分割后的列表有足够的元素来防止索引错误
+#                 if len(open_progress_temp) >= 10:
+#                     global progress_plate
+#                     global progress_player_hp
+#                     global progress_monster_hp
+#                     global progress_time
+#                     progress_player_hp = int(open_progress_temp[1])
+#                     progress_monster_hp = int(open_progress_temp[3])
+#                     progress_time = int(open_progress_temp[5])
+#                     progress_plate = int(open_progress_temp[7])
+#                     progress_t = int(open_progress_temp[9])
+#                 else:
+#                     raise ValueError("Progress data format is incorrect.")
+#     except FileNotFoundError:
+#         print("The file 'game_progress.txt' was not found.")
+#     except ValueError as ve:
+#         print(f"Value error: {ve}")
+#     except Exception as e:
+#         print(f"An unexpected error occurred: {e}")
 
 
 # 游戏记录写入
-def def_open_progress():
-    try:
-        logging.debug('sys w game_progress.txt')
-        with open('game_progress.txt', 'w+', encoding='UTF-8') as open_progress:  # 使用写入+读取模式
-            open_progress.write(f'p_hp;{player.hp};m_hp;{monster.hp};time;{time};plate;{player.plate};temp;0')
-    except IOError as e:  # IOError 用于捕获输入输出错误
-        print(f"An I/O error occurred: {e}")
-    except Exception as e:  # 捕获其他可能的异常
-        print(f"An unexpected error occurred: {e}")
+# def def_open_progress():
+#     try:
+#         logging.debug('sys w game_progress.txt')
+#         with open('game_progress.txt', 'w+', encoding='UTF-8') as open_progress:  # 使用写入+读取模式
+#             open_progress.write(f'p_hp;{player.hp};m_hp;{monster.hp};time;{time};plate;{player.plate};temp;0')
+#     except IOError as e:  # IOError 用于捕获输入输出错误
+#         print(f"An I/O error occurred: {e}")
+#     except Exception as e:  # 捕获其他可能的异常
+#         print(f"An unexpected error occurred: {e}")
 
 
 # 可用骰子提醒

@@ -1,3 +1,5 @@
+#  Copyright (c) 2024.
+
 # @2024
 # 702361946@qq.com
 # 2024.06.28立项
@@ -18,24 +20,24 @@ print('如果发生错误\n请向702361946@qq.com提供错误截图')
 # 欢迎页
 t = 0
 while t < 1:
-    input0 = input('0 记录\n1 开始\n2 继续上一次的进度\n9 退出')
+    input0 = input('0 记录\n1 开始\n2 继续上一次的进度(不可用)\n9 退出')
     if input0 == '0':
         def_result_up()
     elif input0 == '1':
         t = 1
         # user页调用
         def_user()
-    elif input0 == '2':
-        def_read_progress()
-        if progress_t == 0:
-            player.hp = progress_player_hp
-            monster.hp = progress_monster_hp
-            time = progress_time
-            player.player_plate = progress_plate
-            t = 1
-        else:
-            print('无法还原进度')
-            t = 0
+    # elif input0 == '2':
+    #     def_read_progress()
+    #     if progress_t == 0:
+    #         player.hp = progress_player_hp
+    #         monster.hp = progress_monster_hp
+    #         time = progress_time
+    #         player.player_plate = progress_plate
+    #         t = 1
+    #     else:
+    #         print('无法还原进度')
+    #         t = 0
     elif input0 == '9':
         def_exit()
     else:
@@ -144,7 +146,7 @@ while t < 1:
             time = time + 1
             def_player_time()
             def_dice_reset()
-            def_open_progress()
+            # def_open_progress()
             print(f'\n你目前还有{player.hp}点生命')
             print(f'怪物目前还有{monster.hp}点生命\n')
 
