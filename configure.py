@@ -143,8 +143,8 @@ class Dice(object):
         min_t = random.randint(1, 5)
         max_t = random.randint(min_t + 1, 6)
         self.point = random.randint(min_t, max_t)
-        self.point_min = min_t
-        self.point_max = max_t
+        self.min = min_t
+        self.max = max_t
         self.use = use
 
 
@@ -159,10 +159,9 @@ if True:
     logging.info('dice ok')
     tt = 0
     while tt < len(dice_list):
-        logging.debug(f'sys dice {tt} use={dice_list[tt].use} point={dice_list[tt].point} max={dice_list[tt].point_max}'
-                      f' min={dice_list[tt].point_min}')
+        logging.debug(f'sys dice {tt} use={dice_list[tt].use} point={dice_list[tt].point} max={dice_list[tt].max}'
+                      f' min={dice_list[tt].min}')
         tt += 1
-
 
 # 药水基础列表
 if True:
@@ -290,20 +289,20 @@ def def_potion_use():
 
 
 # 重赋值骰子函数
-def def_dice_use_true(dice, point_t_min, point_t_max):  # _t指骰子 _min指骰子最小值 _max指骰子最大值
-    dice.point = random.randint(point_t_min, point_t_max)
-    dice.use = 0
+def def_dice_use_true(t_int):  # _t指骰子 _min指骰子最小值 _max指骰子最大值
+    dice_list[t_int].use = 0
+    dice_list[t_int].point = random.randint(dice_list[t_int].min, dice_list[t_int].max)
 
     logging.debug('sys def dice_use_true')
 
 
 # 重置全部骰子
 def def_dice_reset():
-    def_dice_use_true(dice0, dice0.point_min, dice0.point_max)
-    def_dice_use_true(dice1, dice1.point_min, dice1.point_max)
-    def_dice_use_true(dice2, dice2.point_min, dice2.point_max)
-    def_dice_use_true(dice3, dice3.point_min, dice3.point_max)
-    def_dice_use_true(dice4, dice4.point_min, dice4.point_max)
+    def_dice_use_true(0)
+    def_dice_use_true(1)
+    def_dice_use_true(2)
+    def_dice_use_true(3)
+    def_dice_use_true(4)
 
     logging.debug('sys def dice_reset')
 
@@ -382,7 +381,6 @@ def def_result(result):
 #         with open('game_progress.txt', 'r+', encoding='UTF-8') as open_progress:
 #             for txt in open_progress.readlines():
 #                 open_progress_temp = txt.strip().split(';')
-#                 # 确保分割后的列表有足够的元素来防止索引错误
 #                 if len(open_progress_temp) >= 10:
 #                     global progress_plate
 #                     global progress_player_hp
@@ -498,31 +496,32 @@ def def_user_dice_move():
 
         if temp == '0':
             tt = 1
+            up = False
         elif temp == '1' and dice0.use == 0:
             player.plate += dice_list[int(temp) - 1].point
             print(f'目前在板块{player.plate + 1}上')
             dice_list[int(temp) - 1].use = 1
-            up = None
+            up = True
         elif temp == '2' and dice1.use == 0:
             player.plate += dice_list[int(temp) - 1].point
             print(f'目前在板块{player.plate + 1}上')
             dice_list[int(temp) - 1].use = 1
-            up = None
+            up = True
         elif temp == '3' and dice2.use == 0:
             player.plate += dice_list[int(temp) - 1].point
             print(f'目前在板块{player.plate + 1}上')
             dice_list[int(temp) - 1].use = 1
-            up = None
+            up = True
         elif temp == '4' and dice3.use == 0:
             player.plate += dice_list[int(temp) - 1].point
             print(f'目前在板块{player.plate + 1}上')
             dice_list[int(temp) - 1].use = 1
-            up = None
+            up = True
         elif temp == '5' and dice4.use == 0:
             player.plate += dice_list[int(temp) - 1].point
             print(f'目前在板块{player.plate + 1}上')
             dice_list[int(temp) - 1].use = 1
-            up = None
+            up = True
         else:
             tt = 0
             print('请输入正确的值')
@@ -530,8 +529,6 @@ def def_user_dice_move():
         if player.plate > 9:
             player.plate -= 10
             print(f'错误提醒,目前实际在板块{player.plate + 1}上')
-
-    return up
 
 
 # 骰子使用_板块
@@ -541,62 +538,54 @@ up = None
 def def_user_dice_plate(up):
     logging.debug('user dice_plate')
     tt = 0
+    def_user_dice_use_0()
+
+    def def_user_dice_plate_up():
+        if up is not None:
+            if up == dice_list[int(temp) - 1].point - 1:
+                ttt = dice_list[int(temp) - 1].point
+            else:
+                print(f'骰子点数不合规\n您或许应该出点数为{str(up + 1)}的骰子以连续行动')
+                ttt = False
+        else:
+            ttt = dice_list[int(temp) - 1].point
+
+        return ttt
 
     while tt < 1:
 
         tt = 1
         temp = input('请输入')
 
-        def def_user_dice_plate_up():
-            nonlocal t
-            if up is not None:
-                if up == dice_list[int(temp) - 1].point - 1:
-                    t = dice_list[int(temp) - 1].point
-                else:
-                    print(f'骰子点数不合规\n您或许应该出点数为{str(up + 1)}的骰子以连续行动')
-                    t = 'no'
-            else:
-                t = dice_list[int(temp) - 1].point
-            return t
-
         if temp == '0':
-            tt = 1
-        elif temp == '1' and dice0.use == 0:
-            t = def_user_dice_plate_up()
-            if not t == 'no':
-                dice_list[int(temp) - 1].use = 1
-                plate_list[player.plate].xp += 1
+            t = False
 
-        elif temp == '2' and dice1.use == 0:
-            t = def_user_dice_plate_up()
-            if not t == 'no':
-                dice_list[int(temp) - 1].use = 1
-                plate_list[player.plate].xp += 1
+            pass
 
-        elif temp == '3' and dice2.use == 0:
-            t = def_user_dice_plate_up()
-            if not t == 'no':
-                dice_list[int(temp) - 1].use = 1
-                plate_list[player.plate].xp += 1
-
-        elif temp == '4' and dice3.use == 0:
-            t = def_user_dice_plate_up()
-            if not t == 'no':
-                dice_list[int(temp) - 1].use = 1
-                plate_list[player.plate].xp += 1
-
-        elif temp == '5' and dice4.use == 0:
-            t = def_user_dice_plate_up()
-            if not t == 'no':
-                dice_list[int(temp) - 1].use = 1
-                plate_list[player.plate].xp += 1
+        elif temp.isdigit() and '1' <= temp <= '5':
+            if dice_list[int(temp) - 1].use == 0:
+                t = def_user_dice_plate_up()
+                if t and t is not None:
+                    if isinstance(t, int):
+                        dice_list[int(temp) - 1].use = 1
+                        plate_list[player.plate].xp += 1
+                    else:
+                        print('error')
+                        logging.error(f'sys error def_user_dice_plate t={t}')
+                else:
+                    tt = 0
+                    t = None
+                    print('请输入正确的值')
+            else:
+                t = None
+                input('骰子已被使用或出现其他状况\n按下回车(Enter)继续')
 
         else:
             tt = 0
-            t = '?'
+            t = False
             print('请输入正确的值')
 
-        if not t == '?' and t is not None and not t == 'no':
+        if isinstance(t, int) and t is not None:  # 检查是否为类型int
 
             if plate_list[player.plate].kind == 0:
                 player.attack += t
@@ -619,15 +608,21 @@ def def_user_dice_plate(up):
                 player.treatment += t
                 print(f'预计生命增加{player.treatment}点')
 
-    if True:
-        def_plate_up()
-        return t
+        else:
+            if not isinstance(t, bool) and t is not None:  # 检查是否为T或F
+                logging.error(f'sys error!!!!! def_user_dice_plate! else! t={t}')
+                input('遇到了不正常的问题\n按下enter继续(记得把log文件丢给开发者)')
+
+            t = None
+
+    return t
 
 
 # 板块等级与经验查看
 def def_plate_xpg():
     logging.info('user def plate_xgg')
-    print(f'目前在板块{player.plate + 1}上\n板块经验为{plate_list[player.plate].xp}\n板块等级为{plate_list[player.plate].grade}')
+    print(
+        f'目前在板块{player.plate + 1}上\n板块经验为{plate_list[player.plate].xp}\n板块等级为{plate_list[player.plate].grade}')
     input('按下Enter(回车)继续')
 
 
@@ -676,3 +671,28 @@ def def_plate_up():
         def_plate_up_t(1)
     elif plate_list[player.plate].xp >= 15 and plate_list[player.plate].grade == 2:
         def_plate_up_t(1)
+
+
+# 重投骰子
+def def_dice_retry():
+    logging.info('user def dice_retry')
+    def_dice_reminder_use0()
+    temp = input('9 取消\n输入要重置的骰子')
+    if str.isdigit(temp) and len(dice_list) >= int(temp) >= 1:
+        if dice_list[int(temp) - 1].use == 0:
+            dice_list[int(temp) - 1].point = random.randint(dice_list[int(temp) - 1].min, dice_list[int(temp) - 1].max)
+            print(f'骰子{temp}点数已重置为{dice_list[int(temp) - 1].point}')
+
+            logging.info('user dice_retry -> True')
+            logging.info(f'user dice{int(temp) - 1} in point retry {dice_list[int(temp) - 1].point}')
+
+        else:
+            logging.info('user dice_retry -> False')
+            print('此骰子已被使用无法重置')
+
+    elif temp == '9':
+        print('\n')
+        logging.info('user dice_retry -> exit def')
+
+    else:
+        print('无效输入')

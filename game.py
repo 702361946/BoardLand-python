@@ -66,26 +66,33 @@ while t < 1:
         if temp == '0':
             while t2 < 1:
                 t2 = 1
-                temp = input('0 查看可用骰子\n1 选择骰子并行动\n9 取消')
+                temp = input('0 查看可用骰子\n1 选择骰子并行动\n2 重投骰子\n9 取消')
                 if temp == '0':
+                    print('\n')
                     def_dice_reminder_use0()
                 elif temp == '1':
                     t3 = 0
                     while t3 < 1:
-                        t2 = 1
+                        t3 = 1
                         temp = input(f'0 移动\n1 {plate_kind_list[plate_list[player.plate].kind]}\n9 取消')
 
                         if temp == '0':
                             def_user_dice_use_0()
-                            up = def_user_dice_move()
+                            def_user_dice_move()
+                            up = None
 
                         elif temp == '1':
-                            def_user_dice_use_0()
                             up = def_user_dice_plate(up)
 
+                        elif temp == '9':
+                            print('\n')
+
                         else:
-                            t2 = 0
+                            t3 = 0
                             print('请输入有效的值')
+                elif temp == '2':
+                    print('\n')
+                    def_dice_retry()
                 else:
                     t2 = 0
                     print('输入正确的值')
